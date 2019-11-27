@@ -7,9 +7,9 @@ const express = require('express')
 const app = express()
 
 // 2. Require routes
-const { router: bookRoutes } = require('./routes/books/bookRoutes')
+const { router: symptomRoutes } = require('./resources/symptoms/symptomRoutes')
 
-// 3. Require conatants
+// 3. Require constants
 const { URL, PORT } = require('./utils/constants')
 
 // 4. Ensure that the router is parsing the request body to appropriately format incoming requests
@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // 5. Utilise routes
-app.use('/api/books', bookRoutes)
+app.use('/api/symptoms', symptomRoutes)
 
 // 6. Define configuration for mongodb
 const MONGO_CONFIG = {
@@ -36,4 +36,6 @@ mongoose
   })
   .catch((err) => {
     console.error(err)
+    process.exit(1)
   })
+
