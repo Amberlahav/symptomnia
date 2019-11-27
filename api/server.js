@@ -8,6 +8,7 @@ const app = express()
 
 // 2. Require routes
 const { router: symptomRoutes } = require('./resources/symptoms/symptomRoutes')
+const { router: entryRoutes } = require('./resources/entries/entryRoutes')
 
 // 3. Require constants
 const { URL, PORT } = require('./utils/constants')
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // 5. Utilise routes
 app.use('/api/symptoms', symptomRoutes)
+app.use('/api/entries', entryRoutes)
 
 // 6. Define configuration for mongodb
 const MONGO_CONFIG = {

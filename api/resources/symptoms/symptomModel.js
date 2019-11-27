@@ -9,7 +9,11 @@ const symptomSchema = exports.schema = new Schema({
     type: String,
     required: true
   },
-  description: String
+  description: String,
+  entries: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Entry',
+  }]
 })
 
 exports.model = mongoose.model('Symptom', symptomSchema)

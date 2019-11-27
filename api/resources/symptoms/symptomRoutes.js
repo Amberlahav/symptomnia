@@ -13,7 +13,7 @@ router.route('/')
       const symptoms = await symptomService.listSymptoms()
       // 2. Respond with list of symptoms
       res.status(200).send({
-        data: symptoms
+        results: symptoms
       })
     } catch (e) {
       // 3. If error, send to the error handler
@@ -31,12 +31,60 @@ router.route('/')
       const symptom = await symptomService.createSymptom(body)
       // 3. Respond with created symptom
       res.status(201).send({
-        data: [symptom]
+        results: [symptom]
       })
     } catch (e) {
       // 4. If error, send to the error handler
       next(e)
     }
   })
+
+
+router.route('/:symptomId')
+  .get(async (req, res) => {
+    const { params } = req
+    const { symptomId } = params
+      const symptom = await symptomService.getSymptom(symptomId)
+      if(symptom) {
+          res.json(symptom)
+      } else {
+          res.status(404).send()
+      }
+})
+
+
+// PUT /symptoms/:symptomId
+router.route('/:symptomId')
+  .put(
+    async (req, res, next) => {
+      try {
+        const { symptomId } = req.params;
+        console.log(req.params)
+        const { body } = req;
+        const symptom = await symptomService.updateSymptom(symptomId, body);
+        res.status(200).json({ results: [symptom] });
+      } catch (e) {
+        next(e);
+      }
+    }
+  );
+
+// GET /symptoms/:symptomId/entries
+router.route('/:symptomId/entries')
+  .get(
+    async (req, res, next) => {
+      try {
+        const { symptomId } = req.params;
+        const symptoms = await symptomService.listSymptoms({
+          filter: { _id: symptomId },
+          include: ['entries'],
+        });
+
+        res.json({ results: symptoms });
+      } catch (e) {
+        next(e);
+      }
+    }
+  );
 
 exports.router = router

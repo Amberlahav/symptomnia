@@ -26,3 +26,24 @@ exports.createSymptom = async (symptomData) => {
     throw e
   }
 }
+
+
+exports.getSymptom = async (symptomId) => {
+  try {
+    const symptom = await Symptom.findById(symptomId)
+    return symptom
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}
+
+exports.updateSymptom = async (symptomId, symptomData) => {
+  try {
+    await Symptom.findByIdAndUpdate(symptomId, symptomData);
+    const [nextSymptom] = await exports.listSymptoms({ filter: { _id: symptomId } });
+    return nextSymptom;
+  } catch (e) {
+    throw e;
+  }
+};
