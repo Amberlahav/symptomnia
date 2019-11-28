@@ -1,8 +1,9 @@
 import React from 'react';
 
-const Entry = ({ value }) =>
+const Entry = ({ entry }) =>
     <div>
-        <h1>{value}</h1>
+        <p>{entry.severity}</p>
+        {/* <p>{entry.date}</p> */}
     </div>;
 
 export default Entry;

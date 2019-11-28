@@ -1,4 +1,5 @@
 import App from './App';
+import Landingpage from './Landingpage';
 import Dashboard from './Dashboard';
 import Navbar from './Navbar';
 
@@ -15,6 +16,7 @@ import NewEntry from './NewEntry';
 
 export {
     App,
+    Landingpage,
     Dashboard,
     Navbar,
 

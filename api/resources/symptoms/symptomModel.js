@@ -11,9 +11,13 @@ const symptomSchema = exports.schema = new Schema({
   },
   description: String,
   entries: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Entry',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Entry'
   }]
 })
+
+symptomSchema.pre('find', function() {
+  this.populate('entries');
+});
 
 exports.model = mongoose.model('Symptom', symptomSchema)

@@ -1,73 +1,52 @@
 import React, { Component } from 'react';
 import { Symptom } from './';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import '../App.css';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
-
-// const classes = useStyles();
-
-const symptoms = [
-  {
-    "name": "Stomachache",
-    "id": "123",
-    "description": "Used to happen a lot when I was younger, then it stopped for a few years, now it has started up again. Trying to figure out what my new triggers are.",
-    "entries": [
-        {
-            "severity": "mild"
-        }
-    ]
-  },
-  {
-    "name": "Headache",
-    "id": "456",
-    "description": "Been having migraines for a while.",
-    "entries": [
-        {
-            "severity": "moderate"
-        }
-    ]
-  }
-]
 
 class Symptoms extends Component {
-  constructor() {
-    super()
-
+  constructor(props) {
+    super(props)
     this.state = {
-      symptoms: symptoms
+      symptoms: this.props.symptoms
     }
   }
 
-  
   render () {
     return (
-      <div>
-        {
-          this.state.symptoms ?
-          [this.state.symptoms.map((symptom) => (
-            <Symptom
-              value={symptom.name}
-              key={symptom.id}
-            />
-          )),
-          <Button variant="contained" color="primary">
-              NEW SYMPTOM
-            </Button>]
-          : 
-            [<p>You have no symptoms recorded.</p>,
-              <Button variant="contained" color="primary">
-              NEW SYMPTOM
-            </Button>
-          ]
-        }
+      <div className="wrapper">
+        <h1>Your Symptoms</h1>
+        <div className="symptoms-container">
+          <div className="symptoms-list-header">
+            <div className="symptoms-list-header-element">
+              <h4>Symptom</h4>
+            </div>
+            <div className="symptoms-list-header-element">
+              <h4># of Entries</h4>
+            </div>
+            <div className="symptoms-list-header-element">
+              <h4>Average Severity</h4>
+            </div>
+          </div>
+          {
+            this.state.symptoms ?
+            [this.state.symptoms.map((symptom) => (
+              <Symptom
+                symptom={symptom}
+                key={symptom._id}
+              />
+            )),
+              <Button key='k' variant="contained" color="primary">
+                NEW SYMPTOM
+              </Button>]
+            : 
+              [<p>You have no symptoms recorded.</p>,
+                <Button variant="contained" color="primary">
+                NEW SYMPTOM
+              </Button>
+            ]
+          }
+        </div>
       </div>
     );
   }

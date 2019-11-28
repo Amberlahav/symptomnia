@@ -32,6 +32,7 @@ router.route('/')
     }
   })
 
+// GET /entries/:entryId
 router.route('/:entryId')
   .get(async (req, res) => {
     const { params } = req

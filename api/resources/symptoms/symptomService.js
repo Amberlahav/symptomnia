@@ -2,7 +2,7 @@
 
 const { model: Symptom } = require('./symptomModel')
 
-// Helper function to list each of the symptoms in the database
+// LIST ALL SYMPTOMS::
 exports.listSymptoms = async () => {
   try {
     const symptoms = await Symptom.find({})
@@ -12,7 +12,8 @@ exports.listSymptoms = async () => {
   }
 }
 
-// Create a new symptom that will be added to the database
+
+// CREATE NEW SYMPTOM:
 exports.createSymptom = async (symptomData) => {
   // 1. Create a symptom instance
   const symptom = new Symptom(symptomData)
@@ -27,7 +28,7 @@ exports.createSymptom = async (symptomData) => {
   }
 }
 
-
+// GET SYMPTOM BY ID:
 exports.getSymptom = async (symptomId) => {
   try {
     const symptom = await Symptom.findById(symptomId)
@@ -37,13 +38,3 @@ exports.getSymptom = async (symptomId) => {
     throw err
   }
 }
-
-exports.updateSymptom = async (symptomId, symptomData) => {
-  try {
-    await Symptom.findByIdAndUpdate(symptomId, symptomData);
-    const [nextSymptom] = await exports.listSymptoms({ filter: { _id: symptomId } });
-    return nextSymptom;
-  } catch (e) {
-    throw e;
-  }
-};

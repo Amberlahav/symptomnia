@@ -39,7 +39,7 @@ router.route('/')
     }
   })
 
-
+// GET /symptoms/:symptomId
 router.route('/:symptomId')
   .get(async (req, res) => {
     const { params } = req
@@ -51,23 +51,6 @@ router.route('/:symptomId')
           res.status(404).send()
       }
 })
-
-
-// PUT /symptoms/:symptomId
-router.route('/:symptomId')
-  .put(
-    async (req, res, next) => {
-      try {
-        const { symptomId } = req.params;
-        console.log(req.params)
-        const { body } = req;
-        const symptom = await symptomService.updateSymptom(symptomId, body);
-        res.status(200).json({ results: [symptom] });
-      } catch (e) {
-        next(e);
-      }
-    }
-  );
 
 // GET /symptoms/:symptomId/entries
 router.route('/:symptomId/entries')
@@ -86,5 +69,6 @@ router.route('/:symptomId/entries')
       }
     }
   );
+  
 
 exports.router = router
