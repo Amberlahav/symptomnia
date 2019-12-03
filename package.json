@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/HackerYou/con-ed-full-stack/issues"
   },
-  "homepage": "https://github.com/HackerYou/con-ed-full-stack#readme",
+  "homepage": "https://amberlahav-symptomnia.herokuapp.com/",
   "dependencies": {
     "@material-ui/core": "^4.7.0",
     "@material-ui/icons": "^4.5.1",
