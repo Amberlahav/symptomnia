@@ -25,6 +25,11 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api/symptoms', symptomRoutes)
 app.use('/api/entries', entryRoutes)
 
+// middelware to redirect to index.html if no paths match 
+app.use('/*', (req, res, next) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+})
+
 // 6. Define configuration for mongodb
 const MONGO_CONFIG = {
   useNewUrlParser: true,
