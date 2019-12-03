@@ -15,6 +15,7 @@ class App extends Component {
   async componentDidMount() {
     const result = await fetch('/api/symptoms')
     const data = await result.json()
+    console.log(data.results)
     const prevState = this.state;
     this.setState({
       ...prevState,

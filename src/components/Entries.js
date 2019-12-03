@@ -8,19 +8,21 @@ class Entries extends Component {
     super(props)
 
     this.state = {
-        entries: this.props.entries
     }
-  }
-
-  componentDidMount() {
   }
 
   render () {
     return (
-      <div className=''>
+      <div className='wrapper'>
+        <div className="header-container">
+          <h1>Your Entries For {this.props.selectedSymptom.name}</h1>
+          <Button onClick={this.props.onClickGoBackToSymptoms} variant="contained" color="primary">
+                  BACK
+          </Button>
+        </div>
           {
-            this.state.entries ?
-            [this.state.entries.map((entry) => (
+            this.props.selectedSymptom.entries.length > 0 ?
+            [this.props.selectedSymptom.entries.map((entry) => (
               <Entry
                 entry={entry}
                 key={entry._id}
