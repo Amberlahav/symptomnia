@@ -20,7 +20,7 @@ const entrySchema = exports.schema = new Schema({
     ],
     required: true
   },
-  notes: String,
+  factors: String,
   symptom: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Symptom'
