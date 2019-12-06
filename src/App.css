@@ -142,3 +142,22 @@ nav {
   font-weight: bold;
   font-size: 14px;
 }
+
+
+/* modal */
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-form > button {
+  width: 100px;
+  margin: 25px 0;
+}
+
+.modal-form > div , .modal-form > textarea {
+  margin: 15px 0;
+  width: 300px;
+  max-width: 490px !important;
+}

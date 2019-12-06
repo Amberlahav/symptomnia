@@ -1,6 +1,49 @@
 import React, { Component } from 'react';
-import { Navbar , Symptoms , Entries } from './';
+import { Navbar , Symptoms , NewSymptom } from './';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 import '../App.css';
+
+const useStyles = (theme) => ({
+  root: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
+    background: 'none',
+    boxShadow:'none'
+  },
+  divider: {
+    height: 28,
+    margin: 4,
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border:'none'
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: '20px',
+    height: '50vh',
+    width: '500px',
+    borderRadius: '4px',
+    outline:'none'
+  },
+});
 
 class Dashboard extends Component {
   constructor(props) {
@@ -11,83 +54,165 @@ class Dashboard extends Component {
       showEntries: false,
       showSymptoms: true,
       selectedSymptom: '',
-      newSymptom:''
+      modalOpen: false,
+      newSymptomName:'',
+      newSymptomDescription: '',
+      error: ''
     }
   }
 
-  componentDidMount(){
-    if (this.props.symptoms)
-    this.setState({
-      symptoms: this.props.symptoms
-    })
-  }
+  async componentDidMount() {
+    const result = await fetch('/api/symptoms')
+    const data = await result.json()
 
-  onClickSelectSymptom = (e , symptom) =>{
+    const prevState = this.state;
     this.setState({
-      selectedSymptom: symptom,
-      showEntries: !this.state.showEntries,
-      showSymptoms: !this.state.showSymptoms
+      ...prevState,
+      symptoms: data.results
     })
   }
 
 
-  onClickGoBackToSymptoms = () =>{
+  handleSymptomNameChange = (event) => {
+    const input = event.target.value
+
+    const prevState = this.state;
+
+    // for (let i = 0; i < this.state.symptoms.length; i++) {
+    //   if (this.state.symptoms[i].name === event.target.value) {
+    //     console.log('already exists')
+    //     this.setState({
+    //       error: 'This symptom already exists.'
+    //     })
+    //   }
+    // }
+
     this.setState({
-      selectedSymptom: '',
-      showEntries: !this.state.showEntries,
-      showSymptoms: !this.state.showSymptoms
+      ...prevState,
+      newSymptomName: input,
+      error: ''
     })
   }
 
-  handleSymptomChange = (event) => {
+  handleSymptomDescriptionChange = (event) => {
     const input = event.target.value
 
     const prevState = this.state;
     this.setState({
       ...prevState,
-      newSymptom: input
+      newSymptomDescription: input
     })
   }
 
   handleButtonSubmit = async (event) => {
+    try {
+      
+      let alreadyExists = false;
+      for (let i = 0; i < this.state.symptoms.length; i++) {
+        if (this.state.symptoms[i].name.toLowerCase() == this.state.newSymptomName.toLowerCase()) {
+          alreadyExists = true
+        }
+      }
 
-    const data = {
-      name: this.state.newSymptom
+      if(!this.state.newSymptomName || this.state.newSymptomName === '') {
+        this.setState({
+          error: 'Please enter a symptom name.'
+        })
+      } else if (alreadyExists) {
+        this.setState({
+          error: 'This symptom already exists.'
+        })
+      } else {
+
+        const data = {
+          name: this.state.newSymptomName,
+          description: this.state.newSymptomDescription
+        }
+  
+        const response = await fetch('/api/symptoms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+  
+        const newSymptom = await response.json()
+  
+        const prevSymptoms = this.state.symptoms
+        const nextSymptoms = [...prevSymptoms, newSymptom]
+  
+        this.setState({
+          symptoms: nextSymptoms,
+          newSymptomName: '',
+          newSymptomDescription: '',
+          error: '',
+          modalOpen: false
+        })
+      }
+      
+    } catch (e) {
+      console.log(e)
     }
-    const response = await fetch('/api/symptoms', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }) 
-    const newSymptom = await response.json()
-
-    const prevSymptoms = this.state.symptoms
-    const nextSymptoms = [...prevSymptoms, newSymptom]
-
-    this.setState({
-      symptom: nextSymptoms,
-      newSymptom: ''
-    })
   }
+
+  handleToggleModal = () => {
+    this.setState({
+      modalOpen: !this.state.modalOpen,
+      newSymptomName: '',
+      newSymptomDescription: '',
+      error: ''
+    })
+  };
 
 
   render () {
-    return (
-      <div className='App'>
-        <Navbar />
-        {
-           this.state.showEntries ?
-            <Entries selectedSymptom={this.state.selectedSymptom} onClickGoBackToSymptoms={this.onClickGoBackToSymptoms}/>
-           :
-            <Symptoms symptoms={this.props.symptoms}  onClickSelectSymptom={this.onClickSelectSymptom} newSymptom={this.state.newSymptom} 
-            handleSymptomChange={this.handleSymptomChange}
-            handleButtonSubmit={this.handleButtonSubmit}/>
-        }
-      </div>
-    );
+    const { classes } = this.props;
+      return (
+        <div className='App'>
+          <Navbar />
+          <Symptoms symptoms={this.state.symptoms} />
+          <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
+              ADD NEW SYMPTOM
+              </Button>
+              {this.state.modalOpen ?
+                <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  className={classes.modal}
+                  open={this.state.modalOpen}
+                  onClose={this.handleToggleModal}
+                  closeAfterTransition
+                  BackdropComponent={Backdrop}
+                  BackdropProps={{
+                    timeout: 500,
+                  }}
+                >
+                  <Fade in={this.state.modalOpen} out={false}>
+                    <div className={classes.paper}>
+                      <NewSymptom 
+                        newSymptomName={this.state.newSymptomName} 
+                        handleSymptomNameChange={this.handleSymptomNameChange}
+                        newSymptomDesciption={this.state.newSymptomDescription} 
+                        handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
+                        handleButtonSubmit={this.handleButtonSubmit}
+                      />
+                      {
+                        this.state.error &&
+                      <p>{this.state.error}</p>
+                      }
+                    </div>
+                  </Fade>
+                </Modal>
+                : null
+              }
+        </div>
+      );
   }
 }
 
-export default Dashboard;
+Dashboard.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(useStyles)(Dashboard);

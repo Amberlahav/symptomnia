@@ -1,10 +1,8 @@
 import React from 'react';
-import { Entries } from './';
+// import { Entries } from './';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Divider from '@material-ui/core/Divider';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
 import { makeStyles } from '@material-ui/core/styles';
 
 var dateFormat = require('dateformat');
@@ -30,17 +28,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
 export default function Symptom({ symptom , onClickSelectSymptom}) {
   const classes = useStyles();
 
-  const lastRecorded = symptom.entries.sort().reverse()[0]
+  let lastRecorded;
+  if (symptom.entries) {
+    lastRecorded = symptom.entries.sort().reverse()[0]
+  }
 
   return(
     <div onClick={(e) => onClickSelectSymptom(e, symptom)} className="symptom-container">
           <div className="symptoms-list-container-element">
             <p className="symptom-title">
-                {symptom.name}
+                {symptom.name && symptom.name}
             </p>
               {
                 lastRecorded &&
@@ -53,7 +53,7 @@ export default function Symptom({ symptom , onClickSelectSymptom}) {
           <Divider className={classes.divider} orientation="vertical" />
           <div className="symptoms-list-container-element">
               <p className="small-light-text">Entries</p>
-              <span className="bold-md-text">{symptom.entries.length}</span>
+              <span className="bold-md-text">{symptom.entries ? symptom.entries.length : 0 }</span>
           </div>
           <Divider className={classes.divider} orientation="vertical" />
           <div className="symptoms-list-container-element">

@@ -1,22 +1,23 @@
-'use strict'
+'use strict';
 
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const symptomService = require('./symptomService')
+const symptomService = require('./symptomService');
 
 // GET /symptoms/
 router.route('/')
   .get(async (req, res, next) => {
     try {
       // 1. Fetch all symptoms from database
-      const symptoms = await symptomService.listSymptoms()
+      const symptoms = await symptomService.listSymptoms();
       // 2. Respond with list of symptoms
       res.status(200).send({
         results: symptoms
       })
     } catch (e) {
       // 3. If error, send to the error handler
+      res.status(500).json({"error": "internal server error"});
       next(e)
     }
   })
@@ -25,17 +26,23 @@ router.route('/')
 router.route('/')
   .post(async (req, res, next) => {
     // 1. Get data from request body
-    const { body } = req;
+    const { name, description } = req.body;
+
+    if(!name || name === '') {
+      res.status(400).json({'error': 'Symptom name must be provided.'});
+      return;
+    }
+
     try {
       // 2. Create symptom from data
-      const symptom = await symptomService.createSymptom(body)
+      const symptom = await symptomService.createSymptom({ name, description });
       // 3. Respond with created symptom
-      res.status(201).send({
-        results: [symptom]
-      })
+      res.status(201).send(symptom)
     } catch (e) {
       // 4. If error, send to the error handler
-      next(e)
+      console.log(e);
+      res.status(500).json({"error": "internal server error"});
+      next(e);
     }
   })
 
@@ -44,31 +51,39 @@ router.route('/:symptomId')
   .get(async (req, res) => {
     const { params } = req
     const { symptomId } = params
-      const symptom = await symptomService.getSymptom(symptomId)
+
+    try {
+      const symptom = await symptomService.getSymptomById(symptomId)
       if(symptom) {
           res.json(symptom)
       } else {
           res.status(404).send()
       }
+      
+    } catch(e) {
+        console.log(e)
+        res.status(500).json({"error": "internal server error"});
+    }
+      
 })
 
 // GET /symptoms/:symptomId/entries
-router.route('/:symptomId/entries')
-  .get(
-    async (req, res, next) => {
-      try {
-        const { symptomId } = req.params;
-        const symptoms = await symptomService.listSymptoms({
-          filter: { _id: symptomId },
-          include: ['entries'],
-        });
+// router.route('/:symptomId/entries')
+//   .get(
+//     async (req, res, next) => {
+//       try {
+//         const { symptomId } = req.params;
+//         const symptoms = await symptomService.listSymptoms({
+//           filter: { _id: symptomId },
+//           include: ['entries'],
+//         });
 
-        res.json({ results: symptoms });
-      } catch (e) {
-        next(e);
-      }
-    }
-  );
+//         res.json({ results: symptoms });
+//       } catch (e) {
+//         next(e);
+//       }
+//     }
+//   );
   
 
 exports.router = router
