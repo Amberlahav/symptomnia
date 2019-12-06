@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Landingpage, Dashboard , Login, Signup } from './';
+import { Landingpage, Dashboard , Login, Signup, SymptomDetails } from './';
 import '../App.css';
 
 export default function App() {
@@ -14,6 +14,7 @@ export default function App() {
           <div>
             <Route exact path="/" component={Landingpage} /> 
             <Route exact path="/dashboard" component={Dashboard}/>
+            <Route path="/symptom/:symptomId" component={SymptomDetails} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
           </div>

@@ -109,7 +109,7 @@ class Dashboard extends Component {
       
       let alreadyExists = false;
       for (let i = 0; i < this.state.symptoms.length; i++) {
-        if (this.state.symptoms[i].name.toLowerCase() == this.state.newSymptomName.toLowerCase()) {
+        if (this.state.symptoms[i].name.toLowerCase() === this.state.newSymptomName.toLowerCase()) {
           alreadyExists = true
         }
       }
@@ -170,8 +170,8 @@ class Dashboard extends Component {
     const { classes } = this.props;
       return (
         <div className='App'>
-          <Navbar />
-          <Symptoms symptoms={this.state.symptoms} />
+          <Navbar history={this.props.history} />
+          <Symptoms symptoms={this.state.symptoms} history={this.props.history} />
           <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
               ADD NEW SYMPTOM
               </Button>

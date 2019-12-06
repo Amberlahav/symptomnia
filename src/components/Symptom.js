@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function Symptom({ symptom , onClickSelectSymptom}) {
+export default function Symptom({ symptom , showDetails }) {
   const classes = useStyles();
 
   let lastRecorded;
@@ -37,7 +37,7 @@ export default function Symptom({ symptom , onClickSelectSymptom}) {
   }
 
   return(
-    <div onClick={(e) => onClickSelectSymptom(e, symptom)} className="symptom-container">
+    <div onClick={() => {showDetails(symptom._id)}} className="symptom-container">
           <div className="symptoms-list-container-element">
             <p className="symptom-title">
                 {symptom.name && symptom.name}

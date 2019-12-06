@@ -1,33 +1,17 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import '../App.css';
 
-// const useStyles = makeStyles(theme => ({
-//     root: {
-//       justifyContent: 'space-between',
-//     },
-//     menuButton: {
-//       marginRight: theme.spacing(2),
-//     },
-//     title: {
-//       flexGrow: 1,
-//     },
-//   }));
-// const classes = useStyles();
-class Navbar extends Component {
-    
-  render () {
+export default function Navbar(props) {
     return (
-        <nav>
+        <nav className="nav">
             <img src="" alt="symptomnia" />
             <div className="nav-btn-container">
-                <Button color="inherit">Logout</Button>
+                <Button color="inherit" onClick={() => { props.history.push('/'); }}>Logout</Button>
                 <Button color="inherit">Signup</Button>
             </div>
         </nav>
     );
-  }
+  
 }
-// export default makeStyles(useStyles)(Navbar);
-export default Navbar;

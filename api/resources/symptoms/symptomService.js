@@ -31,7 +31,7 @@ exports.createSymptom = async (symptomData) => {
 // GET SYMPTOM BY ID:
 exports.getSymptomById = async (symptomId) => {
   try {
-    const symptom = await Symptom.findById(symptomId);
+    const symptom = await Symptom.findById(symptomId).populate('entries');
     return symptom;
   } catch (e) {
     console.error(e)

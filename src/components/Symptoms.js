@@ -46,6 +46,10 @@ const useStyles = (theme) => ({
 
 class Symptoms extends Component {
 
+  showDetails = (id) => {
+    this.props.history.push(`/symptom/${id}`);
+  }
+
   render () {
     const { classes } = this.props;
     return (
@@ -58,15 +62,16 @@ class Symptoms extends Component {
         </div>
         {
           this.props.symptoms && 
-              <div className="symptoms-container">
-                  {this.props.symptoms.map((symptom) => (
+            <div className="symptoms-container">
+                {this.props.symptoms.map((symptom) => (
                   <Symptom
                     symptom={symptom}
+                    id={symptom._id}
                     key={symptom._id}
-                    onClickSelectSymptom={this.props.onClickSelectSymptom}
+                    showDetails={this.showDetails}
                   />
                 ))}
-              </div>
+            </div>
         }
       </div>
     );
@@ -74,7 +79,7 @@ class Symptoms extends Component {
 }
 
 Symptoms.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(useStyles)(Symptoms);

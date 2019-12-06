@@ -8,6 +8,7 @@ import Signup from './Signup';
 
 import Symptoms from './Symptoms';
 import Symptom from './Symptom';
+import SymptomDetails from './SymptomDetails';
 import NewSymptom from './NewSymptom';
 import Entries from './Entries';
 import Entry from './Entry';
@@ -25,6 +26,7 @@ export {
     
     Symptoms,
     Symptom,
+    SymptomDetails,
     NewSymptom,
     Entries,
     Entry,

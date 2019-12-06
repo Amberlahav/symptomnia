@@ -64,7 +64,7 @@ h1.symptoms-heading {
 
 /* nav styles: */
 
-nav {
+.nav {
   display: flex;
   max-width: 100%;
   justify-content: space-between;
