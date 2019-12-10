@@ -33,3 +33,15 @@ exports.createEntry = async (entryData) => {
     throw e
   }
 }
+
+// DELETE ENTRY:
+
+exports.deleteEntry = async (entryId) => {
+  try {
+    await Entry.findByIdAndDelete(entryId)
+    console.log('Successful deletion')
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

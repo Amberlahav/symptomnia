@@ -45,5 +45,18 @@ router.route('/:entryId')
       }
   })
 
+// DELETE /entries/:entryId
+
+router.route('/:entryId')
+  .delete(async (req, res) => {
+    const { params } = req;
+    const { entryId } = params;
+    try {
+      await entryService.deleteEntry(entryId)
+      res.status(204).send()
+    } catch(err) {
+      throw err
+    }
+  })
 
 exports.router = router

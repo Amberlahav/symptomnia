@@ -78,15 +78,6 @@ class Dashboard extends Component {
 
     const prevState = this.state;
 
-    // for (let i = 0; i < this.state.symptoms.length; i++) {
-    //   if (this.state.symptoms[i].name === event.target.value) {
-    //     console.log('already exists')
-    //     this.setState({
-    //       error: 'This symptom already exists.'
-    //     })
-    //   }
-    // }
-
     this.setState({
       ...prevState,
       newSymptomName: input,
@@ -174,7 +165,7 @@ class Dashboard extends Component {
           <Symptoms symptoms={this.state.symptoms} history={this.props.history} />
           <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
               ADD NEW SYMPTOM
-              </Button>
+          </Button>
               {this.state.modalOpen ?
                 <Modal
                   aria-labelledby="transition-modal-title"
