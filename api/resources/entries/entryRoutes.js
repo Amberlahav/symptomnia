@@ -24,9 +24,7 @@ router.route('/')
     const { body } = req;
     try {
       const entry = await entryService.createEntry(body)
-      res.status(201).send({
-        results: [entry]
-      })
+      res.status(201).send(entry)
     } catch (e) {
       next(e)
     }

@@ -10,6 +10,7 @@ import Symptoms from './Symptoms';
 import Symptom from './Symptom';
 import SymptomDetails from './SymptomDetails';
 import NewSymptom from './NewSymptom';
+import UpdateSymptom from './UpdateSymptom';
 import Entries from './Entries';
 import Entry from './Entry';
 import NewEntry from './NewEntry';
@@ -28,6 +29,7 @@ export {
     Symptom,
     SymptomDetails,
     NewSymptom,
+    UpdateSymptom,
     Entries,
     Entry,
     NewEntry

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -20,7 +21,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
-import { Navbar, NewEntry } from './';
+import { Navbar, NewEntry , UpdateSymptom } from './';
 
 const dateFormat = require('dateformat');
 
@@ -59,7 +60,11 @@ class SymptomDetails extends Component {
       entries: '',
       selectedEntry: '',
       modalOpen: false,
-      deleteModalOpen: false,
+      deleteEntryModalOpen: false,
+      deleteSymptomModalOpen: false,
+      updateModalOpen: false,
+      newSymptomName:'',
+      newSymptomDescription: '',
       newEntryDate: '',
       newEntryTime: '',
       newEntrySeverity: '',
@@ -120,6 +125,28 @@ class SymptomDetails extends Component {
     })
   }
 
+  handleSymptomNameChange = (event) => {
+    const input = event.target.value
+
+    const prevState = this.state;
+
+    this.setState({
+      ...prevState,
+      newSymptomName: input,
+      error: ''
+    })
+  }
+
+  handleSymptomDescriptionChange = (event) => {
+    const input = event.target.value
+
+    const prevState = this.state;
+    this.setState({
+      ...prevState,
+      newSymptomDescription: input 
+    })
+  }
+
   handleButtonSubmit = async (event) => {
     try {
 
@@ -132,7 +159,7 @@ class SymptomDetails extends Component {
         const data = {
           date: this.state.newEntryDate,
           severity: this.state.newEntrySeverity,
-          factors: this.state.newEntrySeverity,
+          factors: this.state.newEntryFactors,
           symptom: this.state.symptom._id
         }
   
@@ -145,10 +172,10 @@ class SymptomDetails extends Component {
         })
   
         const newEntry = await response.json()
-  
-        const prevEntries = this.state.symptom.entries
+        
+        const prevEntries = this.state.entries
         const nextEntries = [...prevEntries, newEntry]
-  
+
         this.setState({
           entries: nextEntries,
           newEntryDate: '',
@@ -170,15 +197,67 @@ class SymptomDetails extends Component {
         method: 'DELETE'
       })
 
-      const prevEntries = this.state.symptom.entries
+      const prevEntries = this.state.entries
       const nextEntries = prevEntries.filter(entry => entry !== this.state.selectedEntry);
 
       this.setState({
-        deleteModalOpen: false,
+        deleteEntryModalOpen: false,
         entries: nextEntries
       })
     } catch (ex) {
       console.log(ex)
+    }
+  }
+
+  handleDeleteSymptom = async (event) => {
+    try {
+      await fetch(`/api/symptoms/${this.state.symptom._id}`, {
+        method: 'DELETE'
+      })
+
+      this.props.history.push('/dashboard')
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  handleUpdateSymptom = async (event) => {
+    try {
+      
+        const data = {
+          name: this.state.newSymptomName,
+          description: this.state.newSymptomDescription
+        }
+        
+        const response = await fetch(`/api/symptoms/${this.state.symptom._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+  
+        const newSymptom = await response.json()
+  
+        // const prevSymptoms = this.state.symptoms
+        // const nextSymptoms = prevSymptoms.map((symptom) => {
+        //   if (symptom._id === newSymptom._id) {
+        //     symptom = newSymptom
+        //   }
+        //   return symptom
+        // })
+  
+        this.setState({
+          symptom: {
+            name: newSymptom.name,
+            description: newSymptom.description
+          },
+          updateModalOpen: false
+        })
+      
+      
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -208,10 +287,24 @@ class SymptomDetails extends Component {
     })
   };
 
-  handleToggleDeleteModal = (entry) => {
+  handleToggleDeleteEntryModal = (entry) => {
     this.setState({
-      deleteModalOpen: !this.state.deleteModalOpen,
+      deleteEntryModalOpen: !this.state.deleteEntryModalOpen,
       selectedEntry: entry
+    })
+  };
+
+  handleToggleDeleteSymptomModal = () => {
+    this.setState({
+      deleteSymptomModalOpen: !this.state.deleteSymptomModalOpen
+    })
+  };
+
+  handleToggleUpdateModal = () => {
+    this.setState({
+      updateModalOpen: !this.state.updateModalOpen,
+      newSymptomName: this.state.symptom.name,
+      newSymptomDescription: this.state.symptom.description
     })
   };
 
@@ -230,6 +323,7 @@ class SymptomDetails extends Component {
                   <Typography className={classes.textPadding} component="p" variant="body1" align="left" color="textPrimary">
                       {symptom.name}
                   </Typography>
+                  <p>{symptom.description}  <span onClick={this.handleToggleDeleteSymptomModal}><DeleteIcon /></span> <span onClick={this.handleToggleUpdateModal}><EditIcon /></span></p>
                   <List
                       component="nav"
                       aria-labelledby="nested-list-subheader"
@@ -249,7 +343,7 @@ class SymptomDetails extends Component {
                                       </Avatar>
                                   </ListItemAvatar>
                                   <ListItemText primary={dateFormat(entry.date, 'ddd, mmm dS, yyyy, h:MM TT')} secondary={entry.severity}/>
-                                  <span onClick={() => {this.handleToggleDeleteModal(entry)}}><DeleteIcon /></span>
+                                  <span onClick={() => {this.handleToggleDeleteEntryModal(entry)}}><DeleteIcon /></span>
                               </ListItem>
                           ))
                       }
@@ -290,20 +384,20 @@ class SymptomDetails extends Component {
                       </Modal>
                       : null
                     }
-                    {this.state.deleteModalOpen ?
+                    {this.state.deleteEntryModalOpen ?
                           <Modal
                             aria-labelledby="transition-modal-title"
                             aria-describedby="transition-modal-description"
                             className={classes.modal}
-                            open={this.state.deleteModalOpen}
-                            onClose={this.handleToggleDeleteModal}
+                            open={this.state.deleteEntryModalOpen}
+                            onClose={this.handleToggleDeleteEntryModal}
                             closeAfterTransition
                             BackdropComponent={Backdrop}
                             BackdropProps={{
                               timeout: 500,
                             }}
                           >
-                          <Fade in={this.state.deleteModalOpen} out={false}>
+                          <Fade in={this.state.deleteEntryModalOpen} out={false}>
                             <div className={classes.paper}>
                               <p>Are you sure you want to delete this entry?</p>
                               <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteEntry} >
@@ -314,7 +408,57 @@ class SymptomDetails extends Component {
                       </Modal>
                       : null
                     }
-               
+                    {this.state.deleteSymptomModalOpen ?
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={this.state.deleteSymptomModalOpen}
+                            onClose={this.handleToggleDeleteSymptomModal}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                              timeout: 500,
+                            }}
+                          >
+                          <Fade in={this.state.deleteSymptomModalOpen} out={false}>
+                            <div className={classes.paper}>
+                              <p>Are you sure you want to delete this symptom? You will lose all entry data.</p>
+                              <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
+                                  DELETE
+                              </Button>     
+                          </div>
+                        </Fade>
+                      </Modal>
+                      : null
+                    }
+                  {this.state.updateModalOpen ?
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={this.state.updateModalOpen}
+                            onClose={this.handleToggleUpdateModal}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                              timeout: 500,
+                            }}
+                          >
+                          <Fade in={this.state.updateModalOpen} out={false}>
+                            <div className={classes.paper}>
+                              <UpdateSymptom 
+                                  currentSymptomName={this.state.symptom.name}
+                                  handleSymptomNameChange={this.handleSymptomNameChange}
+                                  currentSymptomDescription={this.state.symptom.description} 
+                                  handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
+                                  handleUpdateSymptom={this.handleUpdateSymptom}
+                                /> 
+                          </div>
+                        </Fade>
+                      </Modal>
+                      : null
+                    }
           </div>
         ]
     );

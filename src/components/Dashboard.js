@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar , Symptoms , NewSymptom } from './';
+import { Navbar , Symptoms , NewSymptom , UpdateSymptom } from './';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
@@ -55,6 +55,8 @@ class Dashboard extends Component {
       showSymptoms: true,
       selectedSymptom: '',
       modalOpen: false,
+      deleteModalOpen: false,
+      updateModalOpen: false,
       newSymptomName:'',
       newSymptomDescription: '',
       error: ''
@@ -91,7 +93,7 @@ class Dashboard extends Component {
     const prevState = this.state;
     this.setState({
       ...prevState,
-      newSymptomDescription: input
+      newSymptomDescription: input 
     })
   }
 
@@ -129,7 +131,7 @@ class Dashboard extends Component {
         })
   
         const newSymptom = await response.json()
-  
+        
         const prevSymptoms = this.state.symptoms
         const nextSymptoms = [...prevSymptoms, newSymptom]
   
@@ -156,13 +158,108 @@ class Dashboard extends Component {
     })
   };
 
+  handleToggleDeleteModal = (symptom) => {
+    this.setState({
+      deleteModalOpen: !this.state.deleteModalOpen,
+      selectedSymptom: symptom
+    })
+  };
+
+  handleToggleUpdateModal = (symptom) => {
+    this.setState({
+      updateModalOpen: !this.state.updateModalOpen,
+      selectedSymptom: symptom,
+      newSymptomName: symptom.name,
+      newSymptomDescription: symptom.description
+    })
+  };
+
+  handleDeleteSymptom = async (event) => {
+    try {
+      await fetch(`/api/symptoms/${this.state.selectedSymptom._id}`, {
+        method: 'DELETE'
+      })
+
+      const prevSymptoms = this.state.symptoms
+      const nextSymptoms = prevSymptoms.filter(symptom => symptom !== this.state.selectedSymptom);
+
+      this.setState({
+        deleteModalOpen: false,
+        symptoms: nextSymptoms
+      })
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  handleUpdateSymptom = async (event) => {
+    try {
+      
+      // let alreadyExists = false;
+      // for (let i = 0; i < this.state.symptoms.length; i++) {
+      //   if (this.state.symptoms[i].name.toLowerCase() === this.state.newSymptomName.toLowerCase()) {
+      //     alreadyExists = true
+      //   }
+      // }
+
+      // if(!this.state.newSymptomName || this.state.newSymptomName === '') {
+      //   this.setState({
+      //     error: 'Please enter a symptom name.'
+      //   })
+      // } else if (alreadyExists) {
+      //   this.setState({
+      //     error: 'You have no edits to make, or have already recorded this symptom.'
+      //   })
+      // } else {
+
+        const data = {
+          name: this.state.newSymptomName,
+          description: this.state.newSymptomDescription
+        }
+        
+        const response = await fetch(`/api/symptoms/${this.state.selectedSymptom._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+  
+        const newSymptom = await response.json()
+  
+        const prevSymptoms = this.state.symptoms
+        const nextSymptoms = prevSymptoms.map((symptom) => {
+          if (symptom._id === newSymptom._id) {
+            symptom = newSymptom
+          }
+          return symptom
+        })
+  
+        this.setState({
+          symptoms: nextSymptoms,
+          newSymptomName: '',
+          newSymptomDescription: '',
+          error: '',
+          updateModalOpen: false
+        })
+      
+      
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   render () {
     const { classes } = this.props;
       return (
         <div className='App'>
           <Navbar history={this.props.history} />
-          <Symptoms symptoms={this.state.symptoms} history={this.props.history} />
+          <Symptoms 
+            symptoms={this.state.symptoms} 
+            history={this.props.history} 
+            handleToggleDeleteModal={this.handleToggleDeleteModal} 
+            handleToggleUpdateModal={this.handleToggleUpdateModal}
+          />
           <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
               ADD NEW SYMPTOM
           </Button>
@@ -197,6 +294,63 @@ class Dashboard extends Component {
                 </Modal>
                 : null
               }
+              {this.state.deleteModalOpen ?
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={this.state.deleteModalOpen}
+                            onClose={this.handleToggleDeleteModal}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                              timeout: 500,
+                            }}
+                          >
+                          <Fade in={this.state.deleteModalOpen} out={false}>
+                            <div className={classes.paper}>
+                              <p>Are you sure you want to delete this symptom? You will lose all entry data.</p>
+                              <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
+                                  DELETE
+                              </Button>     
+                          </div>
+                        </Fade>
+                      </Modal>
+                      : null
+                    }
+                     {this.state.updateModalOpen ?
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={this.state.updateModalOpen}
+                            onClose={this.handleToggleUpdateModal}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                              timeout: 500,
+                            }}
+                          >
+                          <Fade in={this.state.updateModalOpen} out={false}>
+                            <div className={classes.paper}>
+                              <UpdateSymptom 
+                                  currentSymptomName={this.state.selectedSymptom.name}
+                                  handleSymptomNameChange={this.handleSymptomNameChange}
+                                  currentSymptomDescription={this.state.selectedSymptom.description} 
+                                  handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
+                                  handleUpdateSymptom={this.handleUpdateSymptom}
+                                /> 
+                                {
+                                this.state.error &&
+                              <p>{this.state.error}</p>
+                              }  
+                          </div>
+                        </Fade>
+                      </Modal>
+                      : null
+                    }
+                     
+               
         </div>
       );
   }

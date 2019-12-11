@@ -38,3 +38,27 @@ exports.getSymptomById = async (symptomId) => {
     throw new Error(e.message);
   }
 }
+
+// DELETE SYMPTOM:
+
+exports.deleteSymptom= async (symptomId) => {
+  try {
+    await Symptom.findByIdAndDelete(symptomId)
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}
+
+// UPDATE SYMPTOM:
+
+exports.updateSymptom= async (symptomId, symptomData) => {
+  try {
+    await Symptom.findByIdAndUpdate(symptomId, symptomData)
+    const newSymptom = await exports.getSymptomById(symptomId);
+    return newSymptom
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

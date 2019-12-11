@@ -69,6 +69,8 @@ class Symptoms extends Component {
                     id={symptom._id}
                     key={symptom._id}
                     showDetails={this.showDetails}
+                    handleToggleDeleteModal={this.props.handleToggleDeleteModal}
+                    handleToggleUpdateModal={this.props.handleToggleUpdateModal}
                   />
                 ))}
             </div>

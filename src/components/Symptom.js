@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function Symptom({ symptom , showDetails }) {
+export default function Symptom({ symptom , showDetails , handleToggleDeleteModal , handleToggleUpdateModal }) {
   const classes = useStyles();
 
   let lastRecorded;
@@ -37,8 +37,8 @@ export default function Symptom({ symptom , showDetails }) {
   }
 
   return(
-    <div onClick={() => {showDetails(symptom._id)}} className="symptom-container">
-          <div className="symptoms-list-container-element">
+    <div className="symptom-container">
+          <div onClick={() => {showDetails(symptom._id)}} className="symptoms-list-container-element">
             <p className="symptom-title">
                 {symptom.name && symptom.name}
             </p>
@@ -63,8 +63,8 @@ export default function Symptom({ symptom , showDetails }) {
           <Divider className={classes.divider} orientation="vertical" />
           <div className="symptoms-list-container-element">
               <p className="small-light-text">Actions</p>
-              <span><DeleteIcon /></span>
-              <span><EditIcon /></span>
+              <span onClick={() => {handleToggleDeleteModal(symptom)}}><DeleteIcon /></span>
+              <span onClick={() => {handleToggleUpdateModal(symptom)}}><EditIcon /></span>
           </div>
     </div>
 

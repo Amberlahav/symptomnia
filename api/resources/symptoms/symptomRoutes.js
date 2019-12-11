@@ -67,23 +67,29 @@ router.route('/:symptomId')
       
 })
 
-// GET /symptoms/:symptomId/entries
-// router.route('/:symptomId/entries')
-//   .get(
-//     async (req, res, next) => {
-//       try {
-//         const { symptomId } = req.params;
-//         const symptoms = await symptomService.listSymptoms({
-//           filter: { _id: symptomId },
-//           include: ['entries'],
-//         });
+// DELETE /symptom/:symptomId
 
-//         res.json({ results: symptoms });
-//       } catch (e) {
-//         next(e);
-//       }
-//     }
-//   );
-  
+router.route('/:symptomId')
+  .delete(async (req, res) => {
+    const { params } = req;
+    const { symptomId } = params;
+    try {
+      await symptomService.deleteSymptom(symptomId)
+      res.status(204).send()
+    } catch(err) {
+      throw err
+    }
+  })
 
+router.route('/:symptomId')
+  .put(async (req, res) => {
+    const { symptomId } = req.params
+    const { body } = req
+    try {
+      const symptom = await symptomService.updateSymptom(symptomId, body)
+      res.status(200).json(symptom)
+    } catch (e) {
+      console.log(e)
+    }
+  })
 exports.router = router
