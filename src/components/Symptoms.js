@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Symptom } from './';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
 import '../App.css';
@@ -45,7 +43,7 @@ const useStyles = (theme) => ({
 });
 
 class Symptoms extends Component {
-
+  
   showDetails = (id) => {
     this.props.history.push(`/symptom/${id}`);
   }
@@ -56,9 +54,6 @@ class Symptoms extends Component {
       <div className="wrapper">
         <div className="header-container">
           <h1 className="symptoms-heading">Your Symptoms</h1>
-          <Paper component="form" className={classes.root}>
-             <TextField id="standard-basic" label="Search Symptoms" />
-          </Paper>
         </div>
         {
           this.props.symptoms && 

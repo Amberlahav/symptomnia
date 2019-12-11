@@ -33,10 +33,12 @@
     "eslint": "^6.6.0",
     "express": "^4.17.1",
     "init-package-json": "^1.10.3",
+    "mdbreact": "^4.23.1",
     "mongoose": "^5.7.10",
     "nodemon": "^1.19.4",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-event-calendar": "^0.3.0",
     "react-router-dom": "^5.1.2"
   },
   "browserslist": [

@@ -3,9 +3,11 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 
-import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -28,7 +30,7 @@ const dateFormat = require('dateformat');
 const styles = (theme) => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   nested: {
@@ -81,10 +83,6 @@ class SymptomDetails extends Component {
       error: ''
     }
   } 
-  // const classes = styles();
-
-  // const [ symptom, updateSymptom ] = useState({});
-  // const hasRetrievedSymptom = useRef(false);
 
   async componentDidMount() {
     try {
@@ -249,14 +247,6 @@ class SymptomDetails extends Component {
   
         const newSymptom = await response.json()
   
-        // const prevSymptoms = this.state.symptoms
-        // const nextSymptoms = prevSymptoms.map((symptom) => {
-        //   if (symptom._id === newSymptom._id) {
-        //     symptom = newSymptom
-        //   }
-        //   return symptom
-        // })
-  
         this.setState({
           symptom: {
             name: newSymptom.name,
@@ -269,6 +259,15 @@ class SymptomDetails extends Component {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  handleCancel = () => {
+    this.setState({
+      modalOpen: false,
+      deleteEntryModalOpen: false,
+      deleteSymptomModalOpen: false,
+      updateModalOpen: false,
+    })
   }
 
   renderIcon = (severity) => {
@@ -346,39 +345,65 @@ class SymptomDetails extends Component {
         [
           <Navbar history={this.props.history} />,
           <div className="wrapper">
-              <p>Symptom details</p>
-                  <Button key='i' variant="contained" color="primary" onClick={() => { this.props.history.push('/dashboard'); }}>
-                      BACK
-                  </Button>
-                  <Typography className={classes.textPadding} component="p" variant="body1" align="left" color="textPrimary">
-                      {symptom.name}
-                  </Typography>
-                  <p>{symptom.description}  <span onClick={this.handleToggleDeleteSymptomModal}><DeleteIcon /></span> <span onClick={this.handleToggleUpdateModal}><EditIcon /></span></p>
-                  <List
-                      component="nav"
-                      aria-labelledby="nested-list-subheader"
-                      subheader={
-                          <ListSubheader component="div" id="nested-list-subheader">
-                          Entries
-                          </ListSubheader>
-                      }
-                      className={classes.root}
-                      >
-                      {
-                          entries && entries.map((entry)=> (
-                              <ListItem>
-                                  <ListItemAvatar>
-                                        {this.renderIcon(entry.severity)}
-                                  </ListItemAvatar>
-                                  <ListItemText primary={dateFormat(entry.date, 'ddd, mmm dS, yyyy, h:MM TT')} secondary={entry.severity}/>
-                                  <span onClick={() => {this.handleToggleDeleteEntryModal(entry)}}><DeleteIcon /></span>
-                              </ListItem>
-                          ))
-                      }
-                      </List>
-                      <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
-                        NEW ENTRY
-                      </Button>
+               <div className="header-container" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                  <h1 className="symptoms-heading" >Symptom Details</h1>
+                        <Button style={{ background: '#011ff5', color: 'white', width:'120px' }} onClick={() => { this.props.history.push('/dashboard'); }}>
+                            <ArrowBackIcon style={{color: 'white', paddingRight: '4px'}}/>BACK
+                        </Button>
+                </div>
+                <div className={classes.root} style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                  <div>
+                    <p className="symptom-title" style={{marginTop:'0px', paddingTop:'20px', paddingLeft:'20px'}}>
+                    {symptom.name}
+                    </p>
+                    <span className="date-label small-light-text" style={{fontSize:'14px', paddingBottom:'20px', paddingLeft:'20px'}}>
+                    {symptom.description} 
+                    </span>
+                  </div>
+                  <div style={{paddingRight:'16px'}}>
+                    <span style={{marginRight:'5px'}}className="action-btn" onClick={this.handleToggleDeleteSymptomModal}><DeleteIcon /></span> <span className="action-btn" onClick={this.handleToggleUpdateModal}><EditIcon /></span>
+                  </div>
+                  
+                </div>
+                  <div className="header-container" style={{ paddingTop:'5px'}}>
+                    <h1 className="symptoms-heading">Entries</h1>
+                  </div>
+                  {
+                    entries.length > 0 ?
+                  
+                    <List
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                        // subheader={
+                        //     <ListSubheader component="div" id="nested-list-subheader">
+                        //     Entries
+                        //     </ListSubheader>
+                        // }
+                        className={classes.root}
+                        >
+                        {
+                            entries && entries.map((entry)=> (
+                                [<ListItem>
+                                    <ListItemAvatar>
+                                          {this.renderIcon(entry.severity)}
+                                    </ListItemAvatar>
+                                    <ListItemText primary={dateFormat(entry.date, 'ddd, mmm dS, yyyy, h:MM TT')} secondary={entry.severity}/>
+                                    {
+                                      entry.factors &&
+                                      <ListItemText primary='Factors:' secondary={entry.factors} />
+                                    }
+                                    <span className="action-btn" onClick={() => {this.handleToggleDeleteEntryModal(entry)}}><DeleteIcon /></span>
+                                </ListItem>,
+                                <Divider />]
+                            ))
+                        }
+                        </List>
+                      : <p style={{textAlign:'left', marginBottom:'40px'}}>You have no entries recorded.</p>}
+                      <div className="wrapper" style={{display:'flex', alignItems:'flex-start', margin:'20px 0'}}>
+                        <Button style={{ background: '#011ff5', color: 'white' }} onClick={this.handleToggleModal}>
+                            <AddCircleOutlineIcon style={{color: 'white', paddingRight: '8px'}}/>LOG NEW ENTRY
+                        </Button>
+                      </div>
                       {this.state.modalOpen ?
                           <Modal
                             aria-labelledby="transition-modal-title"
@@ -402,6 +427,7 @@ class SymptomDetails extends Component {
                                 newEntryFactors={this.state.newEntryFactors} 
                                 handleEntryFactorsChange={this.handleEntryFactorsChange}
                                 handleButtonSubmit={this.handleButtonSubmit}
+                                handleCancel={this.handleCancel}
                               />
                             {
                               this.state.error &&
@@ -426,11 +452,17 @@ class SymptomDetails extends Component {
                             }}
                           >
                           <Fade in={this.state.deleteEntryModalOpen} out={false}>
-                            <div className={classes.paper}>
+                            <div className={classes.paper} style={{height:'150px'}}>
                               <p>Are you sure you want to delete this entry?</p>
-                              <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteEntry} >
-                                  DELETE
-                              </Button>     
+                              <div style={{display:'flex', marginTop:'15px'}}>
+                                <Button style={{marginRight:'15px'}} key='i' variant="contained" color="primary" onClick={this.handleDeleteEntry} >
+                                    DELETE
+                                </Button>
+                                <Button key='i' variant="contained" color="primary" onClick={this.handleCancel} >
+                                    CANCEL
+                                </Button>
+                              </div>
+                                   
                           </div>
                         </Fade>
                       </Modal>
@@ -450,11 +482,16 @@ class SymptomDetails extends Component {
                             }}
                           >
                           <Fade in={this.state.deleteSymptomModalOpen} out={false}>
-                            <div className={classes.paper}>
+                            <div className={classes.paper} style={{height:'150px'}}>
                               <p>Are you sure you want to delete this symptom? You will lose all entry data.</p>
-                              <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
-                                  DELETE
-                              </Button>     
+                              <div style={{display:'flex', marginTop:'15px'}}>
+                                <Button style={{marginRight:'15px'}} key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
+                                    DELETE
+                                </Button>
+                                <Button key='i' variant="contained" color="primary" onClick={this.handleCancel} >
+                                    CANCEL
+                                </Button>  
+                              </div>
                           </div>
                         </Fade>
                       </Modal>
@@ -481,6 +518,7 @@ class SymptomDetails extends Component {
                                   currentSymptomDescription={this.state.symptom.description} 
                                   handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
                                   handleUpdateSymptom={this.handleUpdateSymptom}
+                                  handleCancel={this.handleCancel}
                                 /> 
                           </div>
                         </Fade>

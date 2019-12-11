@@ -24,9 +24,14 @@ class UpdateSymptom extends Component {
             onChange={this.props.handleSymptomDescriptionChange}
             defaultValue={this.props.currentSymptomDescription}
         />
-          <Button key='i' variant="contained" color="primary" onClick={this.props.handleUpdateSymptom}>
+         <div style={{display:'flex', marginTop:'15px'}}>
+          <Button style={{marginRight:'15px'}} key='i' variant="contained" color="primary" onClick={this.props.handleUpdateSymptom}>
                 SAVE
           </Button>
+          <Button key='i' variant="contained" color="primary" onClick={this.props.handleCancel} >
+              CANCEL
+          </Button>
+        </div>
         </form>
       </div>
     );

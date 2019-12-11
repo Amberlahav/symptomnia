@@ -110,8 +110,8 @@ export default function Symptom({ symptom , showDetails , handleToggleDeleteModa
           <Divider className={classes.divider} orientation="vertical" />
           <div className="symptoms-list-container-element">
               <p className="small-light-text">Actions</p>
-              <span onClick={() => {handleToggleDeleteModal(symptom)}}><DeleteIcon /></span>
-              <span onClick={() => {handleToggleUpdateModal(symptom)}}><EditIcon /></span>
+              <span className="action-btn" onClick={() => {handleToggleDeleteModal(symptom)}} style={{marginRight:'15px'}}><DeleteIcon /></span>
+              <span className="action-btn" onClick={() => {handleToggleUpdateModal(symptom)}}><EditIcon /></span>
           </div>
     </div>
 

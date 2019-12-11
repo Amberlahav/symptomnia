@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Navbar , Symptoms , NewSymptom , UpdateSymptom } from './';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -249,6 +250,15 @@ class Dashboard extends Component {
     }
   }
 
+  handleCancel = () => {
+    this.setState({
+      modalOpen: false,
+      deleteModalOpen: false,
+      deleteSymptomModalOpen: false,
+      updateModalOpen: false,
+    })
+  }
+
   render () {
     const { classes } = this.props;
       return (
@@ -260,9 +270,11 @@ class Dashboard extends Component {
             handleToggleDeleteModal={this.handleToggleDeleteModal} 
             handleToggleUpdateModal={this.handleToggleUpdateModal}
           />
-          <Button variant="outlined" color="primary" onClick={this.handleToggleModal}>
-              ADD NEW SYMPTOM
-          </Button>
+          <div className="wrapper" style={{display:'flex', alignItems:'flex-start', marginTop:'15px'}}>
+            <Button style={{ background: '#011ff5', color: 'white' }} onClick={this.handleToggleModal}>
+                <AddCircleOutlineIcon style={{color: 'white', paddingRight: '8px'}}/>ADD NEW SYMPTOM
+            </Button>
+          </div>
               {this.state.modalOpen ?
                 <Modal
                   aria-labelledby="transition-modal-title"
@@ -284,6 +296,7 @@ class Dashboard extends Component {
                         newSymptomDesciption={this.state.newSymptomDescription} 
                         handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
                         handleButtonSubmit={this.handleButtonSubmit}
+                        handleCancel={this.handleCancel}
                       />
                       {
                         this.state.error &&
@@ -308,11 +321,14 @@ class Dashboard extends Component {
                             }}
                           >
                           <Fade in={this.state.deleteModalOpen} out={false}>
-                            <div className={classes.paper}>
+                            <div className={classes.paper} style={{height:'150px',marginTop:'15px'}}>
                               <p>Are you sure you want to delete this symptom? You will lose all entry data.</p>
-                              <Button key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
+                              <Button style={{marginRight:'15px'}}key='i' variant="contained" color="primary" onClick={this.handleDeleteSymptom} >
                                   DELETE
                               </Button>     
+                              <Button key='i' variant="contained" color="primary" onClick={this.handleCancel} >
+                                  CANCEL
+                              </Button>
                           </div>
                         </Fade>
                       </Modal>
@@ -339,6 +355,7 @@ class Dashboard extends Component {
                                   currentSymptomDescription={this.state.selectedSymptom.description} 
                                   handleSymptomDescriptionChange={this.handleSymptomDescriptionChange}
                                   handleUpdateSymptom={this.handleUpdateSymptom}
+                                  handleCancel={this.handleCancel}
                                 /> 
                                 {
                                 this.state.error &&

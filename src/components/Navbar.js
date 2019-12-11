@@ -5,10 +5,9 @@ import '../App.css';
 export default function Navbar(props) {
     return (
         <nav className="nav">
-            <img src="" alt="symptomnia" />
+            <span className="logo-text">symptomnia</span>
             <div className="nav-btn-container">
-                <Button color="inherit" onClick={() => { props.history.push('/'); }}>Logout</Button>
-                <Button color="inherit">Signup</Button>
+                <Button style={{ color:'#011ff5' }} onClick={() => { props.history.push('/'); }}>Logout</Button>
             </div>
         </nav>
     );

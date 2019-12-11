@@ -69,9 +69,14 @@ class NewEntry extends Component {
             onChange={this.props.handleEntryFactorsChange}
             value={this.props.newEntryFactors} 
         />
-          <Button key='i' variant="contained" color="primary" onClick={this.props.handleButtonSubmit}>
+        <div style={{display:'flex', marginTop:'15px'}}>
+          <Button style={{marginRight:'15px'}} key='i' variant="contained" color="primary" onClick={this.props.handleButtonSubmit}>
                 ADD
           </Button>
+          <Button key='i' variant="contained" color="primary" onClick={this.props.handleCancel} >
+              CANCEL
+          </Button>
+        </div>
         </form>
       </div>
     );
