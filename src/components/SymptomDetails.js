@@ -49,6 +49,15 @@ const styles = (theme) => ({
     borderRadius: '4px',
     outline:'none'
   },
+  newEntry:{
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: '20px',
+    height: '80vh',
+    width: '500px',
+    borderRadius: '4px',
+    outline:'none'
+  }
 });
 
 class SymptomDetails extends Component {
@@ -84,7 +93,8 @@ class SymptomDetails extends Component {
 
         this.setState({
           symptom: resp,
-          entries: resp.entries
+          entries: resp.entries,
+          newEntryDate: new Date()
         })
 
       } catch (ex) {
@@ -92,8 +102,8 @@ class SymptomDetails extends Component {
       }
   }
   
-  handleEntryDateChange = (event) => {
-    const input = event.target.value
+  handleEntryDateChange = (date) => {
+    const input = date
 
     const prevState = this.state;
 
@@ -264,22 +274,42 @@ class SymptomDetails extends Component {
   renderIcon = (severity) => {
     switch (severity) {
         case 'mild':
-          return <SentimentSatisfiedIcon />
+          return (
+            <Avatar style={{ background: 'lightgreen' }}>
+                <SentimentSatisfiedIcon style={{ color: 'green', background:'lightgreen' }} />
+            </Avatar>
+          )
         case 'moderate':
-            return <SentimentDissatisfiedIcon />
+            return (
+              <Avatar style={{ background: 'gold' }}>
+                  <SentimentDissatisfiedIcon style={{ color: 'orange', background:'gold' }} />
+              </Avatar>
+            )
         case 'severe':
-            return <SentimentVeryDissatisfiedIcon />
+            return (
+              <Avatar style={{ background: 'pink' }}>
+                  <SentimentVeryDissatisfiedIcon style={{ color: 'maroon', background:'pink' }} />
+              </Avatar>
+            )
         case 'very severe':
-            return <MoodBadIcon />
+            return (
+              <Avatar style={{ background: 'lightpurple' }}>
+                  <MoodBadIcon style={{ color: 'black', background:'lightpurple' }} />
+              </Avatar>
+            )
         default:
-            return <MoodBadIcon />
+            return (
+              <Avatar style={{ background: 'lightgreen' }}>
+                  <SentimentSatisfiedIcon style={{ color: 'green', background:'lightgreen' }} />
+              </Avatar>
+            )
       }
   }
 
   handleToggleModal = () => {
     this.setState({
       modalOpen: !this.state.modalOpen,
-      newEntryDate: '',
+      newEntryDate: new Date(),
       newEntryTime: '',
       newEntrySeverity: '',
       newEntryFactors: '',
@@ -338,9 +368,7 @@ class SymptomDetails extends Component {
                           entries && entries.map((entry)=> (
                               <ListItem>
                                   <ListItemAvatar>
-                                      <Avatar>
-                                          {this.renderIcon(entry.severity)}
-                                      </Avatar>
+                                        {this.renderIcon(entry.severity)}
                                   </ListItemAvatar>
                                   <ListItemText primary={dateFormat(entry.date, 'ddd, mmm dS, yyyy, h:MM TT')} secondary={entry.severity}/>
                                   <span onClick={() => {this.handleToggleDeleteEntryModal(entry)}}><DeleteIcon /></span>
@@ -365,7 +393,7 @@ class SymptomDetails extends Component {
                             }}
                           >
                           <Fade in={this.state.modalOpen} out={false}>
-                            <div className={classes.paper}>
+                            <div className={classes.newEntry}>
                               <NewEntry
                                 newEntryDate={this.state.newEntryDate} 
                                 handleEntryDateChange={this.handleEntryDateChange}

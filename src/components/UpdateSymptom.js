@@ -19,7 +19,6 @@ class UpdateSymptom extends Component {
             label="Description"
             multiline
             rows="4"
-            // className={classes.textField}
             margin="normal"
             variant="outlined"
             onChange={this.props.handleSymptomDescriptionChange}

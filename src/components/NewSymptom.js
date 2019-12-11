@@ -14,13 +14,16 @@ class NewSymptom extends Component {
             onChange={this.props.handleSymptomNameChange}
             value={this.props.newSymptomName}
           />
-          <TextareaAutosize 
-            aria-label="Description (optional)" 
-            rows={3} 
-            placeholder="Description (optional)"
+          <TextField
+            id="outlined-multiline-static"
+            label="Description"
+            multiline
+            rows="4"
+            margin="normal"
+            variant="outlined"
             onChange={this.props.handleSymptomDescriptionChange}
             value={this.props.newSymptomDescription} 
-          />
+        />
           <Button key='i' variant="contained" color="primary" onClick={this.props.handleButtonSubmit}>
                 ADD
           </Button>
