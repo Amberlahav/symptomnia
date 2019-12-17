@@ -24,6 +24,9 @@ exports.createSymptom = async (symptomData) => {
     return newSymptom;
   } catch (e) {
     // 4. If error, throw and controller will catch
+    // Similar to elsewhere, we don't need to catch this at all if all we're doing is re-throwing it
+    // We're also re-casting our error here to a generic `Error`, which could hide some information (ex. We don't know if it was a TypeError, RefferenceError, etc)
+    // The exception to this would be if you were using a custom error class, then you may want to use a pattern like this
     throw new Error(e.message);
   }
 }

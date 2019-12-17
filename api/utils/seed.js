@@ -77,6 +77,7 @@ exports.seed = async () => {
         const symptom = new Symptom(data);
         return await symptom.save();
       } catch (e) {
+        // If the only thing we're doing in a catch is re-throwing the error, you could just leave out the try/catch all together (and it will do the same thing)
         throw e;
       }
     });

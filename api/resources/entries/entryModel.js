@@ -28,6 +28,7 @@ const entrySchema = exports.schema = new Schema({
 });
 
 entrySchema.pre('save', async function (next) {
+    // I think you could just reference `this`, I don't think self would be needed here
     const self = this
     const symptom = await Symptom.findById(self.symptom)
     const currentEntries = symptom.entries
