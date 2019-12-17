@@ -8,6 +8,9 @@ const path = require('path');
 const app = express()
 
 // 2. Require routes
+// Using a default export, we could avoid renaming these (see entryRoutes.js)
+// You will also, generally, want to have all your imports (or requires) at the top of the file
+// (Its not required, but its a common convention)
 const { router: symptomRoutes } = require('./resources/symptoms/symptomRoutes')
 const { router: entryRoutes } = require('./resources/entries/entryRoutes')
 

@@ -17,6 +17,7 @@ router.route('/')
       })
     } catch (e) {
       // 3. If error, send to the error handler
+      // If you're using express' default error handler, you can just pass the error to next without responding, and it will respond for you. You could also add your own custom error handling middleware: https://expressjs.com/en/guide/error-handling.html#writing-error-handlers
       res.status(500).json({"error": "internal server error"});
       next(e)
     }
@@ -28,6 +29,7 @@ router.route('/')
     // 1. Get data from request body
     const { name, description } = req.body;
 
+    // '' is falsey, so `!name` will also catch the name === '' case
     if(!name || name === '') {
       res.status(400).json({'error': 'Symptom name must be provided.'});
       return;

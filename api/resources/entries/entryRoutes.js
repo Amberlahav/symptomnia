@@ -57,4 +57,8 @@ router.route('/:entryId')
     }
   })
 
+/**
+ * We could avoid having to rename the export by using the commonJS equivalent of a default 
+ * export here (ex module.exports = router)
+ */
 exports.router = router
